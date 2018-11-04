@@ -3,6 +3,9 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/combineLatest';
+import 'rxjs/add/operator/map';
+import 'rxjs/add/operator/switchMap';
+
 
 @Component({
   selector: 'github-followers',
@@ -23,15 +26,14 @@ export class GithubFollowersComponent implements OnInit {
       this.route.paramMap,  // required params [0]
       this.route.queryParamMap  // query params
     ])
-    .subscribe(combined => {
+    .switchMap(combined => {
       let id = combined[0].get('id'); // getting data from required params
       let page = combined[1].get('page'); // getting data from query params
 
-      // this.service.getAll({ id: id, page: page })
+      return this.service.getAll()
 
-      this.service.getAll()
-        .subscribe(followers => this.followers = followers);
-    });
+    })
+    .subscribe(followers => this.followers = followers);
 
     // this.route.queryParamMap
     //   .subscribe(params => {
@@ -53,6 +55,6 @@ export class GithubFollowersComponent implements OnInit {
     // // or
     // // let page = this.route.snapshot.queryParamMap.get('id');
 
-    
+
   }
 }
